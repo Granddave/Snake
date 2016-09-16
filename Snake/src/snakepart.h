@@ -1,11 +1,13 @@
 #pragma once
 
 #include "defines.h"
-#include <QPainter>
+#include "block.h"
+#include <QtGui/QPainter>
 
+// Forward declaration
 class Snake;
 
-class SnakePart 
+class SnakePart : public Block
 {
 	friend Snake;
 public:
@@ -14,15 +16,13 @@ public:
 	SnakePart(int x, int y, int direction);
 	~SnakePart();
 
-	void paint(QPainter& painter) const;
+	void paint(QPainter& painter) const override;
 	void move();
-	void changeDir(int dir);
+	void changeDir(int dir) { _direction = dir;	}
+
 
 	int getDir() const	{ return _direction; }
-	Pos getPos() const	{ return _position;  }
 
 private:
-	int _size;
-	Pos _position;
 	int _direction;
 };

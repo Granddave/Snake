@@ -88,6 +88,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_game.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\block.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\game.cpp" />
     <ClCompile Include="Src\snake.cpp" />
@@ -119,6 +120,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\block.h" />
     <ClInclude Include="Src\defines.h" />
     <ClInclude Include="GeneratedFiles\ui_snake.h" />
     <ClInclude Include="Src\snake.h" />

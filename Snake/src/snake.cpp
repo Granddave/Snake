@@ -1,5 +1,6 @@
 #include "Snake.h"
 
+
 Snake::Snake(int startDir) : _length(SNAKE_START_LENGTH)
 {
 	for (int i = 0; i < SNAKE_START_LENGTH; i++)

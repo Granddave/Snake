@@ -8,14 +8,18 @@ SnakePart::SnakePart()
 	_direction = right;
 }
 
-SnakePart::SnakePart(Pos pos, int direction) : _size(BLOCK_SIZE), _position(pos), _direction(direction)
+SnakePart::SnakePart(Pos pos, int direction)
 {
-	
+	_size = BLOCK_SIZE;
+	_position = pos;
+	_direction = direction;
 }
 
-SnakePart::SnakePart(int x, int y, int direction) : _size(BLOCK_SIZE), _position(Pos(x, y)), _direction(direction)
+SnakePart::SnakePart(int x, int y, int direction)
 {
-	
+	_size = BLOCK_SIZE;
+	_position = Pos(x, y);
+	_direction = direction;
 }
 
 SnakePart::~SnakePart()
@@ -39,9 +43,4 @@ void SnakePart::move()
 		_position.y -= 1;
 	else if (_direction == down)
 		_position.y += 1;
-}
-
-void SnakePart::changeDir(int dir)
-{
-	_direction = dir;
 }

@@ -9,14 +9,15 @@ Game::Game(QWidget *parent)
 	setFixedWidth(W_WIDTH);
 	setFixedHeight(W_HEIGHT);
 
+	// Updates the game (e.g. keymaps, gamestates etc)
 	_gameTimer = new QTimer(this);
 	connect(_gameTimer, SIGNAL(timeout()), this, SLOT(update()));
 	_gameTimer->start(5); // 16 
 
+	// Updates the snake
 	_moveTimer = new QTimer(this);
 	connect(_moveTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
 
-	
 	_gamestate = start;
 }
 
@@ -32,21 +33,20 @@ void Game::paintEvent(QPaintEvent* e)
 	QPainter p(this);
 
 #if DEBUG_BLOCK_NUMBERS
-	p.setBrush(Qt::gray);
+	p.setBrush(Qt::lightGray);
 	for (int i = 0; i < BLOCKS_HORI; i++)
 	{
 		p.drawRect(i * BLOCK_SIZE, 0, BLOCK_SIZE, BLOCK_SIZE);
 		p.drawText(i*BLOCK_SIZE + 5, 15, QString::number(i));
-
 	}
 	for (int i = 0; i < BLOCKS_VERT; i++)
 	{
 		p.drawRect(0, i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
 		p.drawText(5, i * BLOCK_SIZE + 15, QString::number(i));
-
 	}
 #endif
 
+	
 	switch (int state = _gamestate)
 	{
 	case start:
@@ -82,10 +82,22 @@ void Game::speedUp()
 {
 	// Increase speed
 	// Called when snake eats point
+	if (_gameSpeed > 10)
+	_gameSpeed -= CHANGE_SPEED_CONSTANT;
+	
+	// Restarts timer to activate new speed
+	_moveTimer->stop();
+	_moveTimer->start(_gameSpeed);
 }
 
 void Game::update()
 {
+#if DEBUG_SPEED
+	static bool plusWasPressed = 0;
+	static bool minusWasPressed = 0;
+#endif
+
+	
 	switch (int state = _gamestate)
 	{
 	// First time start
@@ -104,7 +116,9 @@ void Game::update()
 		_currentDirection = right;
 		_snake = new Snake(_currentDirection);
 		
-		_moveTimer->start(SNAKE_SPEED);
+
+		_gameSpeed = SNAKE_SPEED;
+		_moveTimer->start(_gameSpeed);
 		
 		_gamestate = play;
 		break;
@@ -123,10 +137,34 @@ void Game::update()
 
 		if (!_snake->isAlive())
 			_gamestate = gameover;
+	
+		
+#if DEBUG_SPEED
+		if (_keys[Qt::Key_Plus] != plusWasPressed)
+			speedUp();
+		plusWasPressed = _keys[Qt::Key_Plus];
+
+		if (_keys[Qt::Key_Minus] != minusWasPressed)
+		{
+			// Increase speed
+			// Called when snake eats point
+			
+				_gameSpeed += CHANGE_SPEED_CONSTANT;
+
+			// Restarts timer to activate new speed
+			_moveTimer->stop();
+			_moveTimer->start(_gameSpeed);
+		}
+		minusWasPressed = _keys[Qt::Key_Minus];
+#endif
+
+
+
 		break;
 
 	case gameover:
 		_moveTimer->stop();
+
 		if (_keys[Qt::Key_Space])
 			_gamestate = newGame;
 		break;
