@@ -26,9 +26,9 @@ SnakePart::~SnakePart()
 {
 }
 
-void SnakePart::paint(QPainter& painter) const
+void SnakePart::paint(QPainter& painter, int r, int g, int b) const
 {
-	painter.setBrush(QColor("#88BB77"));
+	painter.setBrush(QColor(r, g, b, 255)); //"#88BB77"
 	painter.drawRect(_position.x * BLOCK_SIZE, _position.y * BLOCK_SIZE, _size, _size);
 }
 

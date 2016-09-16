@@ -34,7 +34,7 @@ void Snake::update()
 void Snake::paint(QPainter& painter)
 {
 	for (int i = 0; i < _parts.length(); i++)
-		_parts[i].paint(painter);
+		_parts[i].paint(painter, 150+i, 250-i, 200-i*2);
 }
 
 void Snake::grow()

@@ -15,7 +15,7 @@ public:
 	SnakePart(int x, int y, int direction);
 	~SnakePart();
 
-	void paint(QPainter& painter) const override;
+	void paint(QPainter& painter, int r, int g, int b) const override;
 	void move();
 
 	void setDir(int dir) { _direction = dir; }
