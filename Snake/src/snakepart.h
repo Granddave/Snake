@@ -2,7 +2,6 @@
 
 #include "defines.h"
 #include "block.h"
-#include <QtGui/QPainter>
 
 // Forward declaration
 class Snake;
@@ -18,8 +17,8 @@ public:
 
 	void paint(QPainter& painter) const override;
 	void move();
-	void changeDir(int dir) { _direction = dir;	}
 
+	void setDir(int dir) { _direction = dir; }
 
 	int getDir() const	{ return _direction; }
 

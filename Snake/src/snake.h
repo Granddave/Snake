@@ -3,7 +3,6 @@
 #include "defines.h"
 #include "snakepart.h"
 #include <QtCore/qvector.h>
-#include <QPainter>
 
 class Snake
 {
@@ -14,21 +13,19 @@ public:
 	void update();
 	void paint(QPainter& painter);
 
-	int getDirection(int p)	{ return _parts[p].getDir(); }
-	Pos getPosition(int part) { return _parts[part].getPos(); }
-
-	bool isAlive() const	{ return _alive;  }
-	void changeHeadDirection(int dir);
 	void grow();
 	void shrink();
+	bool detectCollision();
+	
+	int getDirection(int p)		{ return _parts[p].getDir(); }
+	Pos getPosition(int part)	{ return _parts[part].getPos(); }
+	int getLenght() const		{ return _parts.length(); }
+	bool isAlive() const		{ return _alive;  }
 
-	void detectCollision();
+	void setHeadDirection(int dir);
 
 private:
 	int _length;
-	int _speed;
 	QVector<SnakePart> _parts;
 	bool _alive;
-
-	
 };

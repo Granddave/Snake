@@ -1,8 +1,6 @@
 #pragma once
 
 #include "defines.h"
-#include <QPainter>
-
 
 class Block
 {
@@ -14,8 +12,9 @@ public:
 #endif
 	virtual ~Block();
 
-	Pos getPos() const	{ return _position; }
 	virtual void paint(QPainter& painter) const = 0;
+
+	Pos getPos() const	{ return _position; }
 
 protected:
 	int _size;

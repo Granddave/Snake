@@ -35,7 +35,7 @@ private slots:
 private:
 	Ui::SnakeClass ui;
 	QTimer* _gameTimer;			// Key and gamestate timer
-	QTimer* _moveTimer;			// Playground update timer 
+	QTimer* _playgroundTimer;	// Playground update timer 
 	QMap<int, bool> _keys;		// Keymap
 
 	int _gamestate;

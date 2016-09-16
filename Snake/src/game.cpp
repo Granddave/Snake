@@ -1,6 +1,5 @@
 #include "game.h"
 
-
 Game::Game(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -15,8 +14,8 @@ Game::Game(QWidget *parent)
 	_gameTimer->start(5); // 16 
 
 	// Updates the snake
-	_moveTimer = new QTimer(this);
-	connect(_moveTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
+	_playgroundTimer = new QTimer(this);
+	connect(_playgroundTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
 
 	_gamestate = start;
 }
@@ -24,7 +23,7 @@ Game::Game(QWidget *parent)
 Game::~Game()
 {
 	delete _gameTimer;
-	delete _moveTimer;
+	delete _playgroundTimer;
 	delete _snake;
 }
 
@@ -46,8 +45,7 @@ void Game::paintEvent(QPaintEvent* e)
 	}
 #endif
 
-	
-	switch (int state = _gamestate)
+	switch (_gamestate)
 	{
 	case start:
 		// Welcometext and howto
@@ -86,8 +84,8 @@ void Game::speedUp()
 	_gameSpeed -= CHANGE_SPEED_CONSTANT;
 	
 	// Restarts timer to activate new speed
-	_moveTimer->stop();
-	_moveTimer->start(_gameSpeed);
+	_playgroundTimer->stop();
+	_playgroundTimer->start(_gameSpeed);
 }
 
 void Game::update()
@@ -96,9 +94,7 @@ void Game::update()
 	static bool plusWasPressed = 0;
 	static bool minusWasPressed = 0;
 #endif
-
-	
-	switch (int state = _gamestate)
+	switch (_gamestate)
 	{
 	// First time start
 	case start:
@@ -116,14 +112,12 @@ void Game::update()
 		_currentDirection = right;
 		_snake = new Snake(_currentDirection);
 		
-
-		_gameSpeed = SNAKE_SPEED;
-		_moveTimer->start(_gameSpeed);
+		_playgroundTimer->start(_gameSpeed = SNAKE_SPEED);
 		
 		_gamestate = play;
 		break;
 
-	// Start new game
+	// Play game
 	case play:
 		// Update keymap
 		if (_keys[Qt::Key_Right] || _keys[Qt::Key_D])
@@ -137,8 +131,7 @@ void Game::update()
 
 		if (!_snake->isAlive())
 			_gamestate = gameover;
-	
-		
+
 #if DEBUG_SPEED
 		if (_keys[Qt::Key_Plus] != plusWasPressed)
 			speedUp();
@@ -152,18 +145,16 @@ void Game::update()
 				_gameSpeed += CHANGE_SPEED_CONSTANT;
 
 			// Restarts timer to activate new speed
-			_moveTimer->stop();
-			_moveTimer->start(_gameSpeed);
+			_playgroundTimer->stop();
+			_playgroundTimer->start(_gameSpeed);
 		}
 		minusWasPressed = _keys[Qt::Key_Minus];
 #endif
-
-
-
 		break;
 
+	// Player lost
 	case gameover:
-		_moveTimer->stop();
+		_playgroundTimer->stop();
 
 		if (_keys[Qt::Key_Space])
 			_gamestate = newGame;
@@ -171,22 +162,35 @@ void Game::update()
 	default:
 		break;
 	}
-	
-	if (_keys[Qt::Key_R])
-		_gamestate = newGame;
 
+	// Replay
+	if (_keys[Qt::Key_R])
+		_gamestate = newGame;	
+
+	// Exit game
 	if (_keys[Qt::Key_Escape])
-		close(); // Exit game
-	
+		close(); 
+
 	repaint();
 }
 
 void Game::updatePlayground()
 {
-	_snake->changeHeadDirection(_currentDirection);
-	_snake->update();
-
 	// Loop through all blocks and save in map.
+	// Maps the snake onto the playground
+	for (int i = 0; i < _snake->getLenght(); i++)
+	{
+		Pos temp = _snake->getPosition(0);
+		_playgroundBlocks[Pos(temp)] = snake;
+	}
+	// Add walls to map
 
-	// Check collision?
+	// Add points to map
+	
+
+	// Updates snake
+	_snake->setHeadDirection(_currentDirection);
+	_snake->update();
+	
+	// Check collision with wall and point? 
 }

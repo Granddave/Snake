@@ -24,7 +24,6 @@ SnakePart::SnakePart(int x, int y, int direction)
 
 SnakePart::~SnakePart()
 {
-	
 }
 
 void SnakePart::paint(QPainter& painter) const
