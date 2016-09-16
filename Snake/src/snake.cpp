@@ -16,6 +16,7 @@ Snake::~Snake()
 
 void Snake::update()
 {
+	// Move out detectCollision from Snake::update to game::update
 	if (detectCollision())
 	{
 		_alive = false;
@@ -76,6 +77,11 @@ void Snake::shrink()
 {
 	if (_parts.length() > 1)
 		_parts.pop_back();
+}
+
+void Snake::kill()
+{
+	_alive = false;
 }
 
 bool Snake::detectCollision()

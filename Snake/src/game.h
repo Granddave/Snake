@@ -8,10 +8,12 @@
 #include <QTimer>
 #include <QPainter>
 #include <QKeyEvent>
+#include <time.h> 
 
 // Files and classes
 #include "defines.h"
 #include "snake.h"
+#include "candy.h"
 
 class Game : public QMainWindow
 {
@@ -31,11 +33,14 @@ public:
 private slots:
 	void update();
 	void updatePlayground();
+	void spawnCandy();
 
 private:
 	Ui::SnakeClass ui;
 	QTimer* _gameTimer;			// Key and gamestate timer
 	QTimer* _playgroundTimer;	// Playground update timer 
+	QTimer* _candyTimer;		// 
+
 	QMap<int, bool> _keys;		// Keymap
 
 	int _gamestate;
@@ -43,6 +48,7 @@ private:
 
 	QMap<Pos, int> _playgroundBlocks;	// Keeps track of the playground
 	Snake* _snake;
+	QVector<Candy> _candies;
 	int _currentDirection;
 };
 

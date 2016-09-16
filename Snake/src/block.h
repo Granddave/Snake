@@ -12,11 +12,12 @@ public:
 #endif
 	virtual ~Block();
 
-	virtual void paint(QPainter& painter, int r, int g, int b) const = 0;
+	virtual void paint(QPainter& painter, int r, int g, int b) const;
+	virtual void paint(QPainter& painter) const;
 
 	Pos getPos() const	{ return _position; }
 
 protected:
-	int _size;
+	int _size = BLOCK_SIZE;
 	Pos _position;
 };

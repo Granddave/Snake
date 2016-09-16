@@ -18,3 +18,11 @@ Block::Block(int x, int y) : _size(BLOCK_SIZE), _position(Pos(x, y))
 Block::~Block()
 {
 }
+
+void Block::paint(QPainter& painter, int r, int g, int b) const
+{
+}
+
+void Block::paint(QPainter& painter) const
+{
+}

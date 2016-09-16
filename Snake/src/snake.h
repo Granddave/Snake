@@ -15,6 +15,7 @@ public:
 
 	void grow();
 	void shrink();
+	void kill();
 	bool detectCollision();
 	
 	int getDirection(int p)		{ return _parts[p].getDir(); }

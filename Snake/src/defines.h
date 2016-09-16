@@ -13,14 +13,14 @@
 #define CHANGE_SPEED_CONSTANT	5
 
 #define BLOCKS_HORI				W_WIDTH / BLOCK_SIZE
-#define	BLOCKS_VERT				W_HEIGHT / BLOCK_SIZE
+#define BLOCKS_VERT				(W_HEIGHT) / BLOCK_SIZE
 
 #define DEBUG_KEYSTROKES		1
 #define DEBUG_BLOCK_NUMBERS		1
 
 enum Dir { up, right, down, left };
 enum GameState { start, newGame, play, gameover };
-enum BlockTypes { empty, snake, wall, point };
+enum BlockTypes { empty, wall, candy };
 
 struct Pos
 {
@@ -60,3 +60,5 @@ struct Pos
 		return *this;
 	}
 };
+
+

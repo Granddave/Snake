@@ -8,6 +8,8 @@ Game::Game(QWidget *parent)
 	setFixedWidth(W_WIDTH);
 	setFixedHeight(W_HEIGHT);
 
+	srand(time(nullptr));
+
 	// Updates the game (e.g. keymaps, gamestates etc)
 	_gameTimer = new QTimer(this);
 	connect(_gameTimer, SIGNAL(timeout()), this, SLOT(update()));
@@ -16,6 +18,9 @@ Game::Game(QWidget *parent)
 	// Updates the snake
 	_playgroundTimer = new QTimer(this);
 	connect(_playgroundTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
+
+	_candyTimer = new QTimer(this);
+	connect(_candyTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
 
 	_gamestate = start;
 }
@@ -74,6 +79,10 @@ void Game::paintEvent(QPaintEvent* e)
 void Game::paintPlayground(QPainter& p) const
 {
 	_snake->paint(p);
+
+	if (_candies.length() != 0)
+	for (int i = 0; i < _candies.length(); i++)
+		_candies[i].paint(p);
 }
 
 void Game::speedUp()
@@ -90,6 +99,7 @@ void Game::speedUp()
 
 void Game::update()
 {
+	int a, b;
 #if DEBUG_KEYSTROKES
 	static bool plusWasPressed = 0;
 	static bool minusWasPressed = 0;
@@ -108,14 +118,20 @@ void Game::update()
 
 	// Initialize new game
 	case newGame:
+		// Clears everything 
 		if (_snake != nullptr) // if replay
 			delete _snake;
+		if (!_candies.isEmpty())
+			_candies.clear();
+		
 
 		_currentDirection = right;
 		_snake = new Snake(_currentDirection);
 		
 		_playgroundTimer->start(_gameSpeed = SNAKE_SPEED);
 		
+		_candies.append(Candy(Pos(rand() % BLOCKS_HORI, rand() % BLOCKS_VERT)));
+
 		_gamestate = play;
 		break;
 
@@ -189,20 +205,30 @@ void Game::update()
 void Game::updatePlayground()
 {
 	// Loop through all blocks and save in map.
-	// Maps the snake onto the playground
-	for (int i = 0; i < _snake->getLenght(); i++)
-	{
-		Pos temp = _snake->getPosition(0);
-		_playgroundBlocks[Pos(temp)] = snake;
-	}
 	// Add walls to map
 
 	// Add points to map
-	
+	for (int i = 0; i < _candies.length(); i++)
+	{
+		Pos temp = _candies[i].getPos();
+		_playgroundBlocks[Pos(temp)] = candy;
+	}
 
 	// Updates snake
 	_snake->setHeadDirection(_currentDirection);
 	_snake->update();
 	
-	// Check collision with wall and point? 
+	// Check collision with wall and candy? 
+	/*
+	for (int i = 0; i < BLOCKS_HORI; i++)
+	for (int j = 0; j < BLOCKS_VERT; j++)
+		{
+			if (_playgroundBlocks[Pos(i,j)] == candy)			
+		}
+	*/
+}
+
+void Game::spawnCandy()
+{
+	_candies.append(Candy(Pos(rand() % BLOCKS_HORI - 1, rand() % BLOCKS_VERT - 1)));
 }
