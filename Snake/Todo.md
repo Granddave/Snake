@@ -2,6 +2,7 @@
 
 ## Features
 
+* ~~Growable snake~~
 * Point system
 	* Extend snake
 	* Score counter
@@ -15,7 +16,6 @@
 * Different maps
 * Resize/scale window
 * Different colors on the snake
-
-* ~~overloading operator==~~
+* ~~Overloading operator==~~
 
 ## Bugs

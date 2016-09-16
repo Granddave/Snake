@@ -90,9 +90,11 @@ void Game::speedUp()
 
 void Game::update()
 {
-#if DEBUG_SPEED
+#if DEBUG_KEYSTROKES
 	static bool plusWasPressed = 0;
 	static bool minusWasPressed = 0;
+	static bool oneWasPressed = 0;
+	static bool twoWasPressed = 0;
 #endif
 	switch (_gamestate)
 	{
@@ -132,7 +134,7 @@ void Game::update()
 		if (!_snake->isAlive())
 			_gamestate = gameover;
 
-#if DEBUG_SPEED
+#if DEBUG_KEYSTROKES
 		if (_keys[Qt::Key_Plus] != plusWasPressed)
 			speedUp();
 		plusWasPressed = _keys[Qt::Key_Plus];
@@ -149,6 +151,16 @@ void Game::update()
 			_playgroundTimer->start(_gameSpeed);
 		}
 		minusWasPressed = _keys[Qt::Key_Minus];
+		
+		if (_keys[Qt::Key_1] != oneWasPressed)
+			_snake->grow();
+		oneWasPressed = _keys[Qt::Key_1];
+
+		if (_keys[Qt::Key_2] != twoWasPressed)
+			_snake->shrink();
+		twoWasPressed = _keys[Qt::Key_2];
+
+
 #endif
 		break;
 

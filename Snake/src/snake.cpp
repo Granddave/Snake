@@ -39,10 +39,43 @@ void Snake::paint(QPainter& painter)
 
 void Snake::grow()
 {
+	// "_parts.length() - 1" because _parts count starts at 0, length start at 1..
+	int newDir = _parts[_parts.length() - 1].getDir();	
+	
+	if (newDir == up)
+		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x, _parts[_parts.length() - 1].getPos().y + 1), newDir));
+	else if (newDir == down)
+		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x, _parts[_parts.length() - 1].getPos().y - 1), newDir));
+	else if (newDir == left)
+		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x + 1, _parts[_parts.length() - 1].getPos().y), newDir));
+	else
+		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x - 1, _parts[_parts.length() - 1].getPos().y), newDir));
+	
+
+	// Code below should work if I can get Pos x = Pos y working.
+
+	/*
+	int newDir = _parts[_parts.length() - 1].getDir();
+	Pos lastPos = _parts[_parts.length() - 1].getPos();
+	Pos newPos;
+
+	if (newDir == up)
+		newPos = Pos(lastPos.x, lastPos.y + 1);
+	else if (newDir == down)
+		newPos = Pos(lastPos.x, lastPos.y - 1);
+	else if (newDir == left)
+		newPos = Pos(lastPos.x + 1, lastPos.y);
+	else
+		newPos = Pos(lastPos.x - 1, lastPos.y);
+	
+	_parts.push_back(SnakePart(newPos, newDir));
+	*/
 }
 
 void Snake::shrink()
 {
+	if (_parts.length() > 1)
+		_parts.pop_back();
 }
 
 bool Snake::detectCollision()
