@@ -6,9 +6,9 @@
 #include "GeneratedFiles/ui_snake.h"
 #include "ui_snake.h"
 #include <QTimer>
-#include <QPainter>
+#include <QPainter> 
 #include <QKeyEvent>
-#include <time.h> 
+#include <time.h>	// for rand()
 
 // Files and classes
 #include "defines.h"

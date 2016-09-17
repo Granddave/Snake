@@ -17,5 +17,4 @@ public:
 
 private:
 	QPixmap _texture;
-	Pos _position;
 };

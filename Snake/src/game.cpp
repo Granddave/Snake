@@ -111,15 +111,15 @@ void Game::update()
 	// First time start
 	case start:
 		if (_keys[Qt::Key_Space])
-			_gamestate = newGame;
+			_gamestate = initGame;
 
 		_snake = nullptr;
 		break;
 
 	// Initialize new game
-	case newGame:
-		// Clears everything 
-		if (_snake != nullptr) // if replay
+	case initGame:
+		// Clears everything (if replay)
+		if (_snake != nullptr) 
 			delete _snake;
 		if (!_candies.isEmpty())
 			_candies.clear();
@@ -130,6 +130,7 @@ void Game::update()
 		
 		_playgroundTimer->start(_gameSpeed = SNAKE_SPEED);
 		
+		// for now
 		_candies.append(Candy(Pos(rand() % BLOCKS_HORI, rand() % BLOCKS_VERT)));
 
 		_gamestate = play;
@@ -185,7 +186,7 @@ void Game::update()
 		_playgroundTimer->stop();
 
 		if (_keys[Qt::Key_Space])
-			_gamestate = newGame;
+			_gamestate = initGame;
 		break;
 	default:
 		break;
@@ -193,7 +194,7 @@ void Game::update()
 
 	// Replay
 	if (_keys[Qt::Key_R])
-		_gamestate = newGame;	
+		_gamestate = initGame;	
 
 	// Exit game
 	if (_keys[Qt::Key_Escape])
@@ -205,30 +206,62 @@ void Game::update()
 void Game::updatePlayground()
 {
 	// Loop through all blocks and save in map.
-	// Add walls to map
-
 	// Add points to map
 	for (int i = 0; i < _candies.length(); i++)
 	{
-		Pos temp = _candies[i].getPos();
-		_playgroundBlocks[Pos(temp)] = candy;
+		_playgroundBlocks[_candies[i].getPos()] = candy;
 	}
+	// Add walls to map
 
-	// Updates snake
+
+	// Update direction and movement of the snake
 	_snake->setHeadDirection(_currentDirection);
 	_snake->update();
 	
+
 	// Check collision with wall and candy? 
+	
+	for (int i = 0; i < _candies.length(); i++)
+	{
+		if (_candies[i].getPos() == _snake->getPosition(0))
+		{
+			_candies.remove(i);
+			_snake->grow();
+			speedUp();
+		}
+	}
+
 	/*
 	for (int i = 0; i < BLOCKS_HORI; i++)
 	for (int j = 0; j < BLOCKS_VERT; j++)
 		{
-			if (_playgroundBlocks[Pos(i,j)] == candy)			
+		if (_playgroundBlocks[Pos(i, j)] == candy && Pos(i, j) == _snake->getPosition(0))
+		{
+			_candies.clear();
+			_snake->grow();
+		}
 		}
 	*/
+	
 }
 
 void Game::spawnCandy()
 {
+#if 0	// in progress
+	bool onFreeSpace = 0;
+
+	do
+	{
+		Pos pos = Pos(rand() % BLOCKS_HORI - 1, rand() % BLOCKS_VERT - 1);
+		for (int i = 0; i < _snake->getLenght(); i++)
+		{
+			if (pos == _snake->getPosition(i))
+				onFreeSpace = 0;
+		}
+		
+	} while (!onFreeSpace);
+	_candies.append(Candy(pos));
+#else
 	_candies.append(Candy(Pos(rand() % BLOCKS_HORI - 1, rand() % BLOCKS_VERT - 1)));
+#endif
 }

@@ -6,8 +6,8 @@ class Block
 {
 public:
 	Block();
-#if 0
 	Block(Pos pos);
+#if 0
 	Block(int x, int y);
 #endif
 	virtual ~Block();

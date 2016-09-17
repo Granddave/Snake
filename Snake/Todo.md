@@ -4,8 +4,9 @@
 
 * ~~Growable snake~~
 * Point system
-	* Extend snake
+	* ~~Extend snake~~ (Sort of)
 	* Score counter
+	* Candy can't spawn on snake and walls 
 * Collision detect
 	* ~~Walls~~
 	* ~~Snake~~ 
@@ -24,3 +25,4 @@
 ## Code related
 
 * Move out detectCollision from Snake::update to game::update
+* Change from Pos --> QPoint

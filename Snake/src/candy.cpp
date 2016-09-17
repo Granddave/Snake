@@ -4,7 +4,7 @@ Candy::Candy()
 {
 }
 
-Candy::Candy(Pos position) : _position(position)
+Candy::Candy(Pos position) : Block(position)
 {
 	_texture = QPixmap("Resources/candy.png");
 }

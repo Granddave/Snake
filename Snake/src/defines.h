@@ -19,7 +19,7 @@
 #define DEBUG_BLOCK_NUMBERS		1
 
 enum Dir { up, right, down, left };
-enum GameState { start, newGame, play, gameover };
+enum GameState { start, initGame, play, gameover };
 enum BlockTypes { empty, wall, candy };
 
 struct Pos
