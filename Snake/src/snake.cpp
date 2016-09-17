@@ -40,37 +40,38 @@ void Snake::paint(QPainter& painter)
 
 void Snake::grow()
 {
+#if 0
 	// "_parts.length() - 1" because _parts count starts at 0, length start at 1..
 	int newDir = _parts[_parts.length() - 1].getDir();	
 	
 	if (newDir == up)
-		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x, _parts[_parts.length() - 1].getPos().y + 1), newDir));
+		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x(), _parts[_parts.length() - 1].getPos().y() + 1), newDir));
 	else if (newDir == down)
-		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x, _parts[_parts.length() - 1].getPos().y - 1), newDir));
+		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x(), _parts[_parts.length() - 1].getPos().y() - 1), newDir));
 	else if (newDir == left)
-		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x + 1, _parts[_parts.length() - 1].getPos().y), newDir));
+		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x() + 1, _parts[_parts.length() - 1].getPos().y()), newDir));
 	else
-		_parts.push_back(SnakePart(Pos(_parts[_parts.length() - 1].getPos().x - 1, _parts[_parts.length() - 1].getPos().y), newDir));
+		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x() - 1, _parts[_parts.length() - 1].getPos().y()), newDir));
 	
+#else
+	// Code below should work if I can get QPoint x = QPoint y working.
 
-	// Code below should work if I can get Pos x = Pos y working.
-
-	/*
+	
 	int newDir = _parts[_parts.length() - 1].getDir();
-	Pos lastPos = _parts[_parts.length() - 1].getPos();
-	Pos newPos;
+	QPoint lastPos = _parts[_parts.length() - 1].getPos();
+	QPoint newPos;
 
 	if (newDir == up)
-		newPos = Pos(lastPos.x, lastPos.y + 1);
+		newPos = QPoint(lastPos.x(), lastPos.y() + 1);
 	else if (newDir == down)
-		newPos = Pos(lastPos.x, lastPos.y - 1);
+		newPos = QPoint(lastPos.x(), lastPos.y() - 1);
 	else if (newDir == left)
-		newPos = Pos(lastPos.x + 1, lastPos.y);
+		newPos = QPoint(lastPos.x() + 1, lastPos.y());
 	else
-		newPos = Pos(lastPos.x - 1, lastPos.y);
+		newPos = QPoint(lastPos.x() - 1, lastPos.y());
 	
 	_parts.push_back(SnakePart(newPos, newDir));
-	*/
+#endif
 }
 
 void Snake::shrink()
@@ -87,10 +88,10 @@ void Snake::kill()
 bool Snake::detectCollision()
 {
 	// Collision with wall
-	if (getDirection(0) == left  && _parts[0]._position.x == 0 ||
-		getDirection(0) == right && _parts[0]._position.x == BLOCKS_HORI - 1||
-		getDirection(0) == up    && _parts[0]._position.y == 0 ||
-		getDirection(0) == down  && _parts[0]._position.y == BLOCKS_VERT - 1
+	if (getDirection(0) == left  && _parts[0].getPos().x() == 0 ||
+		getDirection(0) == right && _parts[0].getPos().x() == BLOCKS_HORI - 1 ||
+		getDirection(0) == up    && _parts[0].getPos().y() == 0 ||
+		getDirection(0) == down  && _parts[0].getPos().y() == BLOCKS_VERT - 1
 		)
 	{
 		return true;
@@ -99,13 +100,13 @@ bool Snake::detectCollision()
 	// Snake head against body
 	for (int i = 1; i < _parts.length(); i++) // Skipping first because head is i = 0
 	{
-		if(((_parts[0].getPos().x + 1 == _parts[i].getPos().x && _parts[0].getDir() == right ||
-			 _parts[0].getPos().x - 1 == _parts[i].getPos().x && _parts[0].getDir() == left) && 
-			 _parts[0].getPos().y == _parts[i].getPos().y) || 
+		if (((_parts[0].getPos().x() + 1 == _parts[i].getPos().x() && _parts[0].getDir() == right ||
+			  _parts[0].getPos().x() - 1 == _parts[i].getPos().x() && _parts[0].getDir() == left) &&
+			  _parts[0].getPos().y() == _parts[i].getPos().y()) ||
 
-			(_parts[0].getPos().y + 1 == _parts[i].getPos().y && _parts[0].getDir() == down	|| 
-			 _parts[0].getPos().y - 1 == _parts[i].getPos().y && _parts[0].getDir() == up)	&& 
-			 _parts[0].getPos().x == _parts[i].getPos().x)
+			 (_parts[0].getPos().y() + 1 == _parts[i].getPos().y() && _parts[0].getDir() == down ||
+			  _parts[0].getPos().y() - 1 == _parts[i].getPos().y() && _parts[0].getDir() == up) &&
+			  _parts[0].getPos().x() == _parts[i].getPos().x())
 		{
 			return true;
 		}

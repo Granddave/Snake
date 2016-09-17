@@ -19,7 +19,7 @@ public:
 	bool detectCollision();
 	
 	int getDirection(int p)		{ return _parts[p].getDir(); }
-	Pos getPosition(int part)	{ return _parts[part].getPos(); }
+	QPoint getPos(int part)	{ return _parts[part].getPos(); }
 	int getLenght() const		{ return _parts.length(); }
 	bool isAlive() const		{ return _alive;  }
 

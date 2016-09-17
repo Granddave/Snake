@@ -22,43 +22,5 @@ enum Dir { up, right, down, left };
 enum GameState { start, initGame, play, gameover };
 enum BlockTypes { empty, wall, candy };
 
-struct Pos
-{
-	int x, y;
-	Pos()
-	{
-		x = 0;
-		y = 0;
-	}
-
-	Pos(int X, int Y) 
-	{
-		x = X;
-		y = Y;
-	}
-	
-	bool operator <(const Pos& rhs) const
-	{
-		if (x < rhs.x) { return true; }
-		if (rhs.x < x) { return false; }
-
-		if (y < rhs.y) { return true; }
-		if (rhs.y < y) { return false; }
-
-		return false;
-	}
-
-	bool operator==(const Pos& a) const
-	{
-		return (x == a.x && y == a.y);
-	}
-
-	Pos& operator=(const Pos& a)
-	{
-		x = a.x;
-		y = a.y;
-		return *this;
-	}
-};
 
 

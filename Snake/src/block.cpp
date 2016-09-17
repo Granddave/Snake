@@ -4,12 +4,12 @@ Block::Block()
 {
 }
 
-Block::Block(Pos pos) : _size(BLOCK_SIZE), _position(pos)
+Block::Block(QPoint pos) : _size(BLOCK_SIZE), _position(pos)
 {
 }
 #if 0
 
-Block::Block(int x, int y) : _size(BLOCK_SIZE), _position(Pos(x, y))
+Block::Block(int x, int y) : _size(BLOCK_SIZE), _position(QPoint(x, y))
 {
 }
 #endif

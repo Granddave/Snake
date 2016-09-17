@@ -9,7 +9,7 @@ class Candy : public Block
 {
 public:
 	Candy();
-	Candy(Pos position);
+	Candy(QPoint position);
 	~Candy();
 
 	void paint(QPainter& painter) const override;

@@ -11,7 +11,7 @@ class SnakePart : public Block
 	friend Snake;
 public:
 	SnakePart();
-	SnakePart(Pos, int direction);
+	SnakePart(QPoint, int direction);
 	SnakePart(int x, int y, int direction);
 	~SnakePart();
 
