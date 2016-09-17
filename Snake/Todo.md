@@ -2,18 +2,20 @@
 
 ## Features
 
+* Walls
 * ~~Growable snake~~
 * Point system
-	* ~~Extend snake~~ (Sort of)
-	* Score counter
-	* Candy can't spawn on snake and walls 
+	* ~~Extend snake~~
+	* ~~Score counter~~
+	* ~~Candy can't spawn on snake~~ and walls
+    * Time related?
 * Collision detect
-	* ~~Walls~~
+	* Walls
 	* ~~Snake~~ 
+    * ~~Boundaries~~
 	* ~~Points~~
 * ~~Block registration~~ (Scrapped idea)
 * ~~Inheritance between blocks~~ (Mostly)
-* Walls
 * Different maps
 * Resize/scale window
 * ~~Different colors on the snake~~ (Sort of done)
@@ -24,7 +26,7 @@
 
 ## Bugs
 
-* Balance SpeedUp()
+* ~~Balance SpeedUp()~~
 
 ## Code related
 

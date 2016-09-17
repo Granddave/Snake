@@ -151,6 +151,11 @@ void Game::update()
 		if (!_snake->isAlive())
 			_gamestate = gameover;
 
+		// Spawn candy in waves
+		if (_candies.isEmpty())
+			for (int i = 0; i < CANDY_SPAWN_NUMBER; i++)
+				spawnCandy();
+
 #if DEBUG_KEYSTROKES
 		if (_keys[Qt::Key_Plus] != plusWasPressed)
 			speedUp();
