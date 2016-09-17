@@ -28,6 +28,7 @@ public:
 	void keyPressEvent(QKeyEvent* e)	override	{ _keys[e->key()] = true; }
 
 	void speedUp();
+	void eatCandy(int candy);
 
 private slots:
 	void update();
@@ -38,15 +39,13 @@ private:
 	Ui::SnakeClass ui;
 	QTimer* _gameTimer;			// Key and gamestate timer
 	QTimer* _playgroundTimer;	// Playground update timer 
-	QTimer* _candyTimer;		
 
 	QMap<int, bool> _keys;		// Keymap
 
 	int _gamestate;
 	int _gameSpeed;
+	int _score;
 
-	// Scrapped idea? 
-	//QMap<QPoint, int> _playgroundBlocks;	// Keeps track of the playground
 	Snake* _snake;
 	QVector<Candy> _candies;
 	int _currentDirection;

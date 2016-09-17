@@ -40,23 +40,6 @@ void Snake::paint(QPainter& painter)
 
 void Snake::grow()
 {
-#if 0
-	// "_parts.length() - 1" because _parts count starts at 0, length start at 1..
-	int newDir = _parts[_parts.length() - 1].getDir();	
-	
-	if (newDir == up)
-		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x(), _parts[_parts.length() - 1].getPos().y() + 1), newDir));
-	else if (newDir == down)
-		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x(), _parts[_parts.length() - 1].getPos().y() - 1), newDir));
-	else if (newDir == left)
-		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x() + 1, _parts[_parts.length() - 1].getPos().y()), newDir));
-	else
-		_parts.push_back(SnakePart(QPoint(_parts[_parts.length() - 1].getPos().x() - 1, _parts[_parts.length() - 1].getPos().y()), newDir));
-	
-#else
-	// Code below should work if I can get QPoint x = QPoint y working.
-
-	
 	int newDir = _parts[_parts.length() - 1].getDir();
 	QPoint lastPos = _parts[_parts.length() - 1].getPos();
 	QPoint newPos;
@@ -71,7 +54,6 @@ void Snake::grow()
 		newPos = QPoint(lastPos.x() - 1, lastPos.y());
 	
 	_parts.push_back(SnakePart(newPos, newDir));
-#endif
 }
 
 void Snake::shrink()

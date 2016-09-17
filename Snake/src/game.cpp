@@ -20,8 +20,6 @@ Game::Game(QWidget *parent)
 	_playgroundTimer = new QTimer(this);
 	connect(_playgroundTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
 
-	_candyTimer = new QTimer(this);
-	connect(_candyTimer, SIGNAL(timeout()), this, SLOT(updatePlayground()));
 
 	_gamestate = start;
 }
@@ -61,6 +59,7 @@ void Game::paintEvent(QPaintEvent* e)
 
 	case play:
 		paintPlayground(p);
+		p.drawText(W_WIDTH - 45, 15, QString("Score:" + QString::number(_score)));
 		break;
 
 	case gameover:
@@ -68,7 +67,8 @@ void Game::paintEvent(QPaintEvent* e)
 		
 		// Gameover text
 		p.drawText(W_WIDTH / 2, W_HEIGHT / 2, QString("OUCH"));
-		p.drawText(W_WIDTH / 2 - 60, W_HEIGHT / 2 + 15, QString("PRESS SPACE TO PLAY AGAIN"));
+		p.drawText(W_WIDTH / 2 - 17, W_HEIGHT / 2 + 15, QString("Total score: " + QString::number(_score)));
+		p.drawText(W_WIDTH / 2 - 60, W_HEIGHT / 2 + 30, QString("PRESS SPACE TO PLAY AGAIN"));
 		break;
 
 	default:
@@ -90,13 +90,14 @@ void Game::speedUp()
 {
 	// Increase speed
 	// Called when snake eats point
-	if (_gameSpeed > 10)
-	_gameSpeed -= CHANGE_SPEED_CONSTANT;
+	if (_gameSpeed >= SNAKE_TOP_SPEED)
+		_gameSpeed -= CHANGE_SPEED_CONSTANT;
 	
 	// Restarts timer to activate new speed
 	_playgroundTimer->stop();
 	_playgroundTimer->start(_gameSpeed);
 }
+
 
 void Game::update()
 {
@@ -125,15 +126,13 @@ void Game::update()
 		if (!_candies.isEmpty())
 			_candies.clear();
 		
+		_score = 0;
 
 		_currentDirection = right;
 		_snake = new Snake(_currentDirection);
 		
 		_playgroundTimer->start(_gameSpeed = SNAKE_SPEED);
 		
-		// for now
-		_candies.append(Candy(QPoint(rand() % BLOCKS_HORI, rand() % BLOCKS_VERT)));
-
 		_gamestate = play;
 		break;
 
@@ -206,19 +205,9 @@ void Game::update()
 	repaint();
 }
 
+// Updates all blocks
 void Game::updatePlayground()
 {
-#if 0	// Scrapped idea?
-	// Loop through all blocks and save in map.
-	// Add points to map
-	for (int i = 0; i < _candies.length(); i++)
-	{
-		const QPoint p = _candies[i].getPos();
-		_playgroundBlocks[p] = candy;
-	}
-	// Add walls to map
-#endif
-
 	// Update direction and movement of the snake
 	_snake->setHeadDirection(_currentDirection);
 	_snake->update();
@@ -229,43 +218,39 @@ void Game::updatePlayground()
 	{
 		if (_candies[i].getPos() == _snake->getPos(0))
 		{
-			_candies.remove(i);
-			_snake->grow();
-			speedUp();
+			eatCandy(i);
 		}
 	}
-
-	/*
-	for (int i = 0; i < BLOCKS_HORI; i++)
-	for (int j = 0; j < BLOCKS_VERT; j++)
-		{
-		if (_playgroundBlocks[QPoint(i, j)] == candy && QPoint(i, j) == _snake->getPos(0))
-		{
-			_candies.clear();
-			_snake->grow();
-		}
-		}
-	*/
-	
 }
 
+// Spawns a piece of candy on free space
 void Game::spawnCandy()
 {
-#if 0	// in progress
-	bool onFreeSpace = 0;
-
+	bool onFreeSpace = true;
+	QPoint pos;
 	do
 	{
-		QPoint pos = QPoint(rand() % BLOCKS_HORI - 1, rand() % BLOCKS_VERT - 1);
+		onFreeSpace = true;
+		pos = QPoint(rand() % BLOCKS_HORI, rand() % BLOCKS_VERT);
 		for (int i = 0; i < _snake->getLenght(); i++)
 		{
 			if (pos == _snake->getPos(i))
-				onFreeSpace = 0;
+				onFreeSpace = false;
+			/* TODO
+			if (pos == Wall(i))
+				onFreeSpace = false;
+			*/
 		}
-		
 	} while (!onFreeSpace);
 	_candies.append(Candy(pos));
-#else
-	_candies.append(Candy(QPoint(rand() % BLOCKS_HORI - 1, rand() % BLOCKS_VERT - 1)));
-#endif
+}
+
+void Game::eatCandy(int candy)
+{
+	_candies.remove(candy);
+	_score++;
+	_snake->grow();
+	_snake->grow();
+	_snake->grow();
+	speedUp();
 }
