@@ -4,7 +4,7 @@
 Snake::Snake(int startDir) : _length(SNAKE_START_LENGTH)
 {
 	for (int i = 0; i < SNAKE_START_LENGTH; i++)
-		_parts.push_back(SnakePart(BLOCKS_HORI / 2 - i, BLOCKS_VERT / 2, startDir));
+		_parts.push_back(SnakePart(BLOCKS_HORI / 2 - i, (BLOCKS_VERT / 2) + 5, startDir));
 
 	_alive = true;
 }

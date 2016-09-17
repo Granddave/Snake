@@ -23,7 +23,6 @@
 
 enum Dir { up, right, down, left };
 enum GameState { start, initGame, play, gameover };
-enum BlockTypes { empty, wall, candy };
 
 
 

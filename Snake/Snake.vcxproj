@@ -94,6 +94,7 @@
     <ClCompile Include="Src\game.cpp" />
     <ClCompile Include="Src\snake.cpp" />
     <ClCompile Include="Src\snakepart.cpp" />
+    <ClCompile Include="src\wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Src\game.h">
@@ -127,6 +128,7 @@
     <ClInclude Include="GeneratedFiles\ui_snake.h" />
     <ClInclude Include="Src\snake.h" />
     <ClInclude Include="Src\snakepart.h" />
+    <ClInclude Include="src\wall.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="snake.qrc">

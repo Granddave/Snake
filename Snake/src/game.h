@@ -13,6 +13,7 @@
 #include "defines.h"
 #include "snake.h"
 #include "candy.h"
+#include "wall.h"
 
 class Game : public QMainWindow
 {
@@ -34,6 +35,7 @@ private slots:
 	void update();
 	void updatePlayground();
 	void spawnCandy();
+	void spawnWalls();
 
 private:
 	Ui::SnakeClass ui;
@@ -48,6 +50,8 @@ private:
 
 	Snake* _snake;
 	QVector<Candy> _candies;
+	QVector<Wall> _walls;
+
 	int _currentDirection;
 };
 

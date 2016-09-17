@@ -84,6 +84,10 @@ void Game::paintPlayground(QPainter& p) const
 	if (_candies.length() != 0)
 	for (int i = 0; i < _candies.length(); i++)
 		_candies[i].paint(p);
+
+	if (_walls.length() != 0)
+	for (int i = 0; i < _walls.length(); i++)
+		_walls[i].paint(p);
 }
 
 void Game::speedUp()
@@ -111,6 +115,8 @@ void Game::update()
 	static bool minusWasPressed = 0;
 	static bool oneWasPressed = 0;
 	static bool twoWasPressed = 0;
+	static bool pWasPressed = 0;
+	static bool isPaused = 0;
 #endif
 	switch (_gamestate)
 	{
@@ -120,6 +126,10 @@ void Game::update()
 			_gamestate = initGame;
 
 		_snake = nullptr;
+
+		if (_walls.isEmpty())
+			spawnWalls();
+		
 		break;
 
 	// Initialize new game
@@ -130,6 +140,7 @@ void Game::update()
 		if (!_candies.isEmpty())
 			_candies.clear();
 		
+
 		_score = 0;
 
 		_currentDirection = right;
@@ -186,6 +197,18 @@ void Game::update()
 			_snake->shrink();
 		twoWasPressed = _keys[Qt::Key_2];
 
+		if (_keys[Qt::Key_P] != pWasPressed)
+		if (isPaused)
+		{
+			_playgroundTimer->start(_gameSpeed);
+			isPaused = false;
+		}
+		else
+		{
+			_playgroundTimer->stop();
+			isPaused = true;
+		}
+		pWasPressed = _keys[Qt::Key_2];
 
 #endif
 		break;
@@ -220,17 +243,50 @@ void Game::updatePlayground()
 	// Update direction and movement of the snake
 	_snake->setHeadDirection(_currentDirection);
 	_snake->update();
-	
 
 	// Check collision with wall and candy? 
 	for (int i = 0; i < _candies.length(); i++)
-	{
 		if (_candies[i].getPos() == _snake->getPos(0))
-		{
 			eatCandy(i);
-		}
-	}
+			
+	for (int i = 0; i < _walls.length(); i++)
+		if (_walls[i].getPos() == _snake->getPos(0))
+			_snake->kill();
 }
+
+void Game::spawnWalls()
+{
+	// Map 1
+	for (int i = 0; i < 20; i++)
+	{
+		QPoint pos = QPoint(10 + i, 4);
+			_walls.append(Wall(pos));
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		QPoint pos = QPoint(10, 5 + i);
+		_walls.append(Wall(pos));
+	}
+	for (int i = 0; i < 10; i++)
+	{
+		QPoint pos = QPoint(29, 5 + i);
+		_walls.append(Wall(pos));
+	}
+	for (int i = 0; i < 7; i++)
+	{
+		QPoint pos = QPoint(29 - i, 15);
+		_walls.append(Wall(pos));
+	}
+	for (int i = 0; i < 7; i++)
+	{
+		QPoint pos = QPoint(10 + i, 15);
+		_walls.append(Wall(pos));
+	}
+
+
+
+}
+
 
 // Spawns a piece of candy on free space
 void Game::spawnCandy()
@@ -242,24 +298,24 @@ void Game::spawnCandy()
 		onFreeSpace = true;
 		pos = QPoint(rand() % BLOCKS_HORI, rand() % BLOCKS_VERT);
 		for (int i = 0; i < _snake->getLenght(); i++)
-		{
 			if (pos == _snake->getPos(i))
 				onFreeSpace = false;
-			/* TODO
-			if (pos == Wall(i))
+
+		for (int j = 0; j < _walls.length(); j++)
+			if (pos == _walls[j].getPos())
 				onFreeSpace = false;
-			*/
-		}
+			
+		
 	} while (!onFreeSpace);
 	_candies.append(Candy(pos));
 }
+
 
 void Game::eatCandy(int candy)
 {
 	_candies.remove(candy);
 	_score++;
 	_snake->grow();
-	_snake->grow();
-	_snake->grow();
 	speedUp();
 }
+
