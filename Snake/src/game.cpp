@@ -91,7 +91,11 @@ void Game::speedUp()
 	// Increase speed
 	// Called when snake eats point
 	if (_gameSpeed >= SNAKE_TOP_SPEED)
-		_gameSpeed -= CHANGE_SPEED_CONSTANT;
+		if (_gameSpeed < 50)
+			_gameSpeed -= 1;	// to balance
+		else
+			_gameSpeed -= CHANGE_SPEED_CONSTANT;
+		
 	
 	// Restarts timer to activate new speed
 	_playgroundTimer->stop();
