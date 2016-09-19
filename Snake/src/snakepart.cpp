@@ -5,7 +5,7 @@ SnakePart::SnakePart()
 {
 	_size = BLOCK_SIZE;
 	_position = QPoint();
-	_direction = right;
+	_direction = _right;
 }
 
 SnakePart::SnakePart(QPoint pos, int direction)
@@ -34,12 +34,12 @@ void SnakePart::paint(QPainter& painter, int r, int g, int b) const
 
 void SnakePart::move()
 {
-	if (_direction == left)
+	if (_direction == _left)
 		_position.rx()--;
-	else if (_direction == right)
+	else if (_direction == _right)
 		_position.rx()++;
-	else if (_direction == up)
+	else if (_direction == _up)
 		_position.ry()--;
-	else if (_direction == down)
+	else if (_direction == _down)
 		_position.ry()++;
 }

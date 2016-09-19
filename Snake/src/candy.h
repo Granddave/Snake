@@ -17,4 +17,5 @@ public:
 
 private:
 	QPixmap _texture;
+	float _colorShift;	// Shifts the breath effect  0 < x < 1
 };

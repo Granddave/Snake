@@ -15,11 +15,11 @@ public:
 
 	void grow();
 	void shrink();
-	void kill();
-	bool detectCollision();
+	void kill()					{ _alive = false; }
+	void detectCollision();
 	
 	int getDirection(int p)		{ return _parts[p].getDir(); }
-	QPoint getPos(int part)	{ return _parts[part].getPos(); }
+	QPoint getPos(int part)		{ return _parts[part].getPos(); }
 	int getLenght() const		{ return _parts.length(); }
 	bool isAlive() const		{ return _alive;  }
 

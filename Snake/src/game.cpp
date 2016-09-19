@@ -34,7 +34,6 @@ Game::~Game()
 void Game::paintEvent(QPaintEvent* e)
 {
 	QPainter p(this);
-
 #if DEBUG_BLOCK_NUMBERS
 	p.setBrush(Qt::lightGray);
 	for (int i = 0; i < BLOCKS_HORI; i++)
@@ -48,13 +47,16 @@ void Game::paintEvent(QPaintEvent* e)
 		p.drawText(5, i * BLOCK_SIZE + 15, QString::number(i));
 	}
 #endif
-
+	QRect _rect;
 	switch (_gamestate)
 	{
 	case start:
 		// Welcometext and howto
-		p.drawText(W_WIDTH / 2, W_HEIGHT / 2, QString("SNAKE"));
-		p.drawText(W_WIDTH / 2 - 35, W_HEIGHT / 2 + 15, QString("PRESS SPACE TO PLAY"));
+		p.setBrush(QColor("#CCCCCC"));
+		_rect = QRect(W_WIDTH / 2 - 80, W_HEIGHT / 2 - 80, 160, 60);
+		p.drawRect(_rect);
+		p.drawText(_rect, Qt::AlignCenter,
+			"SNAKE \nPRESS SPACE TO PLAY");
 		break;
 
 	case play:
@@ -65,12 +67,12 @@ void Game::paintEvent(QPaintEvent* e)
 	case gameover:
 		paintPlayground(p);
 		
-		// Gameover text
-		p.drawText(W_WIDTH / 2, W_HEIGHT / 2, QString("OUCH"));
-		p.drawText(W_WIDTH / 2 - 17, W_HEIGHT / 2 + 15, QString("Total score: " + QString::number(_score)));
-		p.drawText(W_WIDTH / 2 - 60, W_HEIGHT / 2 + 30, QString("PRESS SPACE TO PLAY AGAIN"));
+		p.setBrush(QColor("#CCCCCC"));
+		_rect = QRect(W_WIDTH / 2 - 90, W_HEIGHT / 2 - 80, 180, 70);
+		p.drawRect(_rect);
+		p.drawText(_rect, Qt::AlignCenter,
+			"OUCH \nTotal score: " + QString::number(_score) + "\nPRESS SPACE TO PLAY AGAIN");
 		break;
-
 	default:
 		break;
 	}
@@ -79,11 +81,11 @@ void Game::paintEvent(QPaintEvent* e)
 // Paints e.g. snake, points, walls etc 
 void Game::paintPlayground(QPainter& p) const
 {
-	_snake->paint(p);
-
 	if (_candies.length() != 0)
 	for (int i = 0; i < _candies.length(); i++)
 		_candies[i].paint(p);
+	
+	_snake->paint(p);
 
 	if (_walls.length() != 0)
 	for (int i = 0; i < _walls.length(); i++)
@@ -109,7 +111,6 @@ void Game::speedUp()
 
 void Game::update()
 {
-	int a, b;
 #if DEBUG_KEYSTROKES
 	static bool plusWasPressed = 0;
 	static bool minusWasPressed = 0;
@@ -129,7 +130,6 @@ void Game::update()
 
 		if (_walls.isEmpty())
 			spawnWalls();
-		
 		break;
 
 	// Initialize new game
@@ -140,12 +140,9 @@ void Game::update()
 		if (!_candies.isEmpty())
 			_candies.clear();
 		
-
 		_score = 0;
-
-		_currentDirection = right;
+		_currentDirection = _right;
 		_snake = new Snake(_currentDirection);
-		
 		_playgroundTimer->start(_gameSpeed = SNAKE_SPEED);
 		
 		_gamestate = play;
@@ -154,19 +151,15 @@ void Game::update()
 	// Play game
 	case play:
 		// Update keymap
-		if (_keys[Qt::Key_Right] || _keys[Qt::Key_D])
-			_currentDirection = right;
-		else if (_keys[Qt::Key_Left] || _keys[Qt::Key_A])
-			_currentDirection = left;
-		else if (_keys[Qt::Key_Up] || _keys[Qt::Key_W])
-			_currentDirection = up;
-		else if (_keys[Qt::Key_Down] || _keys[Qt::Key_S])
-			_currentDirection = down;
+		if (_keys[Qt::Key_Right] || _keys[Qt::Key_D])		_currentDirection = _right;
+		else if (_keys[Qt::Key_Left] || _keys[Qt::Key_A])	_currentDirection = _left;
+		else if (_keys[Qt::Key_Up] || _keys[Qt::Key_W])		_currentDirection = _up;
+		else if (_keys[Qt::Key_Down] || _keys[Qt::Key_S])	_currentDirection = _down;
 
 		if (!_snake->isAlive())
 			_gamestate = gameover;
 
-		// Spawn candy in waves
+		// Spawn candy in waves (5 at a time)
 		if (_candies.isEmpty())
 			for (int i = 0; i < CANDY_SPAWN_NUMBER; i++)
 				spawnCandy();
@@ -242,16 +235,29 @@ void Game::updatePlayground()
 {
 	// Update direction and movement of the snake
 	_snake->setHeadDirection(_currentDirection);
-	_snake->update();
+	_snake->detectCollision();
+	
+	// Snake head against wall
+	for (int i = 1; i < _walls.length(); i++) // Skipping first because head is i = 0
+	{
+		if (((_snake->getPos(0).x() + 1 == _walls[i].getPos().x() && _snake->getDirection(0) == _right ||
+			  _snake->getPos(0).x() - 1 == _walls[i].getPos().x() && _snake->getDirection(0) == _left) &&
+			  _snake->getPos(0).y() == _walls[i].getPos().y()) ||
 
-	// Check collision with wall and candy? 
+			((_snake->getPos(0).y() + 1 == _walls[i].getPos().y() && _snake->getDirection(0) == _down ||
+			  _snake->getPos(0).y() - 1 == _walls[i].getPos().y() && _snake->getDirection(0) == _up) &&
+			  _snake->getPos(0).x() == _walls[i].getPos().x()))
+		{
+			_snake->kill();
+		}
+	}
+
+	// Check snake collision with candy   
 	for (int i = 0; i < _candies.length(); i++)
 		if (_candies[i].getPos() == _snake->getPos(0))
 			eatCandy(i);
-			
-	for (int i = 0; i < _walls.length(); i++)
-		if (_walls[i].getPos() == _snake->getPos(0))
-			_snake->kill();
+
+	_snake->update();
 }
 
 void Game::spawnWalls()
@@ -282,9 +288,6 @@ void Game::spawnWalls()
 		QPoint pos = QPoint(10 + i, 15);
 		_walls.append(Wall(pos));
 	}
-
-
-
 }
 
 
@@ -297,15 +300,22 @@ void Game::spawnCandy()
 	{
 		onFreeSpace = true;
 		pos = QPoint(rand() % BLOCKS_HORI, rand() % BLOCKS_VERT);
+		
+		// Check if the snake occupies pos
 		for (int i = 0; i < _snake->getLenght(); i++)
 			if (pos == _snake->getPos(i))
 				onFreeSpace = false;
 
-		for (int j = 0; j < _walls.length(); j++)
-			if (pos == _walls[j].getPos())
+		// Check if a wall occupies pos
+		for (int i = 0; i < _walls.length(); i++)
+			if (pos == _walls[i].getPos())
 				onFreeSpace = false;
-			
 		
+		// Check if a candy occupies pos
+		for (int i = 0; i < _candies.length(); i++)
+			if (pos == _candies[i].getPos())
+				onFreeSpace = false;
+
 	} while (!onFreeSpace);
 	_candies.append(Candy(pos));
 }

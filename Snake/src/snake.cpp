@@ -16,13 +16,6 @@ Snake::~Snake()
 
 void Snake::update()
 {
-	// Move out detectCollision from Snake::update to game::update
-	if (detectCollision())
-	{
-		_alive = false;
-		return;	// so snake doesn't move when dead
-	}
-
 	// Move snake parts
 	for (int i = 0; i < _parts.length(); i++)
 		_parts[i].move();
@@ -44,11 +37,11 @@ void Snake::grow()
 	QPoint lastPos = _parts[_parts.length() - 1].getPos();
 	QPoint newPos;
 
-	if (newDir == up)
+	if (newDir == _up)
 		newPos = QPoint(lastPos.x(), lastPos.y() + 1);
-	else if (newDir == down)
+	else if (newDir == _down)
 		newPos = QPoint(lastPos.x(), lastPos.y() - 1);
-	else if (newDir == left)
+	else if (newDir == _left)
 		newPos = QPoint(lastPos.x() + 1, lastPos.y());
 	else
 		newPos = QPoint(lastPos.x() - 1, lastPos.y());
@@ -62,46 +55,41 @@ void Snake::shrink()
 		_parts.pop_back();
 }
 
-void Snake::kill()
+// Boundaries and body collision
+void Snake::detectCollision()
 {
-	_alive = false;
-}
-
-bool Snake::detectCollision()
-{
-	// Collision with wall
-	if (getDirection(0) == left  && _parts[0].getPos().x() == 0 ||
-		getDirection(0) == right && _parts[0].getPos().x() == BLOCKS_HORI - 1 ||
-		getDirection(0) == up    && _parts[0].getPos().y() == 0 ||
-		getDirection(0) == down  && _parts[0].getPos().y() == BLOCKS_VERT - 1
+	// Collision with boundaries
+	if (getDirection(0) == _left  && _parts[0].getPos().x() == 0 ||
+		getDirection(0) == _right && _parts[0].getPos().x() == BLOCKS_HORI - 1 ||
+		getDirection(0) == _up    && _parts[0].getPos().y() == 0 ||
+		getDirection(0) == _down  && _parts[0].getPos().y() == BLOCKS_VERT - 1
 		)
 	{
-		return true;
+		kill();
 	}
-
+	
 	// Snake head against body
 	for (int i = 1; i < _parts.length(); i++) // Skipping first because head is i = 0
 	{
-		if (((_parts[0].getPos().x() + 1 == _parts[i].getPos().x() && _parts[0].getDir() == right ||
-			  _parts[0].getPos().x() - 1 == _parts[i].getPos().x() && _parts[0].getDir() == left) &&
+		if (((_parts[0].getPos().x() + 1 == _parts[i].getPos().x() && _parts[0].getDir() == _right ||
+			  _parts[0].getPos().x() - 1 == _parts[i].getPos().x() && _parts[0].getDir() == _left) &&
 			  _parts[0].getPos().y() == _parts[i].getPos().y()) ||
 
-			 (_parts[0].getPos().y() + 1 == _parts[i].getPos().y() && _parts[0].getDir() == down ||
-			  _parts[0].getPos().y() - 1 == _parts[i].getPos().y() && _parts[0].getDir() == up) &&
-			  _parts[0].getPos().x() == _parts[i].getPos().x())
+			 ((_parts[0].getPos().y() + 1 == _parts[i].getPos().y() && _parts[0].getDir() == _down ||
+			  _parts[0].getPos().y() - 1 == _parts[i].getPos().y() && _parts[0].getDir() == _up) &&
+			  _parts[0].getPos().x() == _parts[i].getPos().x()))
 		{
-			return true;
+			kill();
 		}
 	}
-	return false;
 }
 
 void Snake::setHeadDirection(int dir)
 {
-	if (_parts[0].getDir() == up    && dir != down  ||
-		_parts[0].getDir() == down  && dir != up    ||
-		_parts[0].getDir() == left  && dir != right ||
-		_parts[0].getDir() == right && dir != left)
+	if (_parts[0].getDir() == _up    && dir != _down  ||
+		_parts[0].getDir() == _down  && dir != _up    ||
+		_parts[0].getDir() == _left  && dir != _right ||
+		_parts[0].getDir() == _right && dir != _left)
 	{
 		_parts[0].setDir(dir);
 	}
