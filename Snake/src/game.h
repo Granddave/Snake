@@ -47,12 +47,11 @@ private:
 	int _gamestate;
 	int _gameSpeed;
 	int _score;
+	int _currentDirection;
 
 	Snake* _snake;
 	QVector<Candy> _candies;
 	QVector<Wall> _walls;
-
-	int _currentDirection;
 };
 
 #endif // SNAKE_H
