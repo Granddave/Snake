@@ -1,13 +1,21 @@
 #include "game.h"
 #include <time.h>	// for rand()
+#include <QDebug>
+
 
 Game::Game(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	_settings = new QSettings(SETTINGS_LOCATION, QSettings::IniFormat);
+	_settings->beginGroup("Window");
+	_settings->setValue("width", W_WIDTH);
+	_settings->setValue("height", W_HEIGHT);
+	_settings->endGroup();
 
-	setFixedWidth(W_WIDTH);
-	setFixedHeight(W_HEIGHT);
+	setFixedWidth(_settings->value("Window/width").toInt());
+	setFixedHeight(_settings->value("Window/height").toInt());
+
 
 	srand(time(nullptr));
 
@@ -26,6 +34,7 @@ Game::Game(QWidget *parent)
 
 Game::~Game()
 {
+	delete _settings;
 	delete _gameTimer;
 	delete _playgroundTimer;
 	delete _snake;
@@ -52,7 +61,7 @@ void Game::paintEvent(QPaintEvent* e)
 	{
 	case start:
 		// Welcometext and howto
-		p.setBrush(QColor("#CCCCCC"));
+		p.setBrush(QColor(_settings->value("Menu/bgColor").toString()));
 		_rect = QRect(W_WIDTH / 2 - 80, W_HEIGHT / 2 - 80, 160, 60);
 		p.drawRect(_rect);
 		p.drawText(_rect, Qt::AlignCenter,
@@ -67,7 +76,7 @@ void Game::paintEvent(QPaintEvent* e)
 	case gameover:
 		paintPlayground(p);
 		
-		p.setBrush(QColor("#CCCCCC"));
+		p.setBrush(QColor(_settings->value("Menu/bgColor").toString()));
 		_rect = QRect(W_WIDTH / 2 - 90, W_HEIGHT / 2 - 80, 180, 70);
 		p.drawRect(_rect);
 		p.drawText(_rect, Qt::AlignCenter,
@@ -294,8 +303,9 @@ void Game::spawnWalls()
 // Spawns a piece of candy on free space
 void Game::spawnCandy()
 {
-	bool onFreeSpace = true;
+	bool onFreeSpace = true, noSpaceForCandy = 0;
 	QPoint pos;
+	int checkedBlocks = 0;
 	do
 	{
 		onFreeSpace = true;
@@ -315,9 +325,13 @@ void Game::spawnCandy()
 		for (int i = 0; i < _candies.length(); i++)
 			if (pos == _candies[i].getPos())
 				onFreeSpace = false;
-
-	} while (!onFreeSpace);
-	_candies.append(Candy(pos));
+		
+		if (++checkedBlocks == BLOCKS_HORI * BLOCKS_VERT)
+			noSpaceForCandy = true;
+	} while (!onFreeSpace && !noSpaceForCandy);
+	
+	if (!noSpaceForCandy)
+		_candies.append(Candy(pos));
 }
 
 

@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QPainter> 
 #include <QKeyEvent>
+#include <QSettings>
 
 // Files and classes
 #include "defines.h"
@@ -39,6 +40,7 @@ private slots:
 
 private:
 	Ui::SnakeClass ui;
+	QSettings* _settings;
 	QTimer* _gameTimer;			// Key and gamestate timer
 	QTimer* _playgroundTimer;	// Playground update timer 
 

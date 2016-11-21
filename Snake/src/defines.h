@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+#define SETTINGS_LOCATION		"settings.ini"
+
 #define PI						3.14159265359
 
 #define W_WIDTH					800			
